@@ -3,11 +3,10 @@ package demo.springframework.spring6beer.entities;
 import demo.springframework.spring6beer.models.BeerStyle;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,10 +17,9 @@ import java.util.UUID;
 public class Beer {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @UuidGenerator
-    @Column(length = 36, columnDefinition = "varchar", updatable = false, nullable = false)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
+    private Long id;
 
     @Version
     private Integer version;
@@ -29,8 +27,12 @@ public class Beer {
     private String beerName;
     private BeerStyle beerStyle;
     private String upc;
-    private Integer quantityOnHand;
-    private BigDecimal price;
+    private int quantityOnHand;
+    private double price;
+
+    @CreationTimestamp
     private LocalDateTime createdDate;
+
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 }

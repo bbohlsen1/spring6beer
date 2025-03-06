@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class BootstrapData implements CommandLineRunner {
                     .beerName("Galaxy Cat")
                     .beerStyle(BeerStyle.PALE_ALE)
                     .upc("123456")
-                    .price(new BigDecimal("12.99"))
+                    .price(12.99)
                     .quantityOnHand(122)
                     .createdDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())
@@ -43,7 +41,7 @@ public class BootstrapData implements CommandLineRunner {
                     .beerName("Crank")
                     .beerStyle(BeerStyle.PALE_ALE)
                     .upc("123456222")
-                    .price(new BigDecimal("12.99"))
+                    .price(12.99)
                     .quantityOnHand(392)
                     .createdDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())
@@ -53,7 +51,7 @@ public class BootstrapData implements CommandLineRunner {
                     .beerName("Sunshine City")
                     .beerStyle(BeerStyle.IPA)
                     .upc("12356")
-                    .price(new BigDecimal("13.99"))
+                    .price(13.99)
                     .quantityOnHand(144)
                     .createdDate(LocalDateTime.now())
                     .updateDate(LocalDateTime.now())

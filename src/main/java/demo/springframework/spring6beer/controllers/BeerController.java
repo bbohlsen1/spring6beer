@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Slf4j
@@ -23,7 +22,7 @@ public class BeerController {
     private final BeerService beerService;
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") Long beerId, @RequestBody BeerDTO beer) {
 
         beerService.patchBeerById(beerId, beer);
 
@@ -31,7 +30,7 @@ public class BeerController {
     }
 
     @DeleteMapping(BEER_PATH_ID)
-    public ResponseEntity deleteById(@PathVariable("beerId") UUID beerId) {
+    public ResponseEntity deleteById(@PathVariable("beerId") Long beerId) {
 
         if(!beerService.deleteById(beerId)) {
             throw new NotFoundException();
@@ -41,7 +40,7 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable("beerId") UUID beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity updateById(@PathVariable("beerId") Long beerId, @RequestBody BeerDTO beer) {
 
         if (beerService.getBeerById(beerId, beer).isEmpty()) {
             throw new NotFoundException("Beer not found");
@@ -71,12 +70,11 @@ public class BeerController {
     public ResponseEntity handleNotFoundException() {
         System.out.println("In exception handler");
 
-        //alternative to the new method
         return  ResponseEntity.notFound().build();
     }
 
     @GetMapping(value = BEER_PATH_ID)
-    public BeerDTO getBeerById(@PathVariable("beerId") UUID beerId) {
+    public BeerDTO getBeerById(@PathVariable("beerId") Long beerId) {
 
         log.debug("Get beer by id - in controller - 1234 asdf");
 

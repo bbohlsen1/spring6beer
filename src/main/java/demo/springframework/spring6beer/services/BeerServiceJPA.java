@@ -9,14 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
 @Primary
 @RequiredArgsConstructor
-public class BeerServiceJPA implements BeerService {
+public class BeerServiceJPA extends BeerService {
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
 
@@ -29,7 +28,7 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public Optional<BeerDTO> getBeerById(UUID id) {
+    public Optional<BeerDTO> getBeerById(Long id) {
         return Optional.ofNullable(beerMapper.beerToBeerDTO(beerRepository.findById(id)
                 .orElse(null)));
     }
@@ -41,7 +40,7 @@ public class BeerServiceJPA implements BeerService {
 
     //Should be renamed to updateBeerById at some point
     @Override
-    public Optional<BeerDTO> getBeerById(UUID beerId, BeerDTO beer) {
+    public Optional<BeerDTO> getBeerById(Long beerId, BeerDTO beer) {
         AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 
         beerRepository.findById(beerId).ifPresentOrElse(foundBeer -> {
@@ -59,7 +58,7 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public Boolean deleteById(UUID beerId) {
+    public Boolean deleteById(Long beerId) {
 
         if(beerRepository.existsById(beerId)) {
             beerRepository.deleteById(beerId);
@@ -69,7 +68,7 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public void patchBeerById(UUID beerId, BeerDTO beer) {
+    public void patchBeerById(Long beerId, BeerDTO beer) {
 
     }
 }

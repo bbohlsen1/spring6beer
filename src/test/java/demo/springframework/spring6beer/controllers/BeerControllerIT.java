@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ class BeerControllerIT {
     @Test
     void testDeleteByIdNotFound() {
         assertThrows(NotFoundException.class, () -> {
-            beerController.deleteById(UUID.randomUUID());
+            beerController.deleteById(ThreadLocalRandom.current().nextLong());
         });
     }
 
@@ -52,7 +53,7 @@ class BeerControllerIT {
     @Test
     void testUpdateNotFound() {
         assertThrows(NotFoundException.class, () -> {
-            beerController.updateById(UUID.randomUUID(), BeerDTO.builder().build());
+            beerController.updateById(ThreadLocalRandom.current().nextLong(), BeerDTO.builder().build());
         });
     }
 
@@ -89,17 +90,17 @@ class BeerControllerIT {
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatusCode.valueOf(201));
         assertThat(responseEntity.getHeaders().getLocation()).isNotNull();
 
-        String[] locationUUID = responseEntity.getHeaders().getLocation().getPath().split("/");
-        UUID savedUUID = UUID.fromString(locationUUID[4]);
+        String[] locationParts = responseEntity.getHeaders().getLocation().getPath().split("/");
+        Long savedId = Long.parseLong(locationParts[4]);
 
-        Beer beer = beerRepository.findById(savedUUID).get();
+        Beer beer = beerRepository.findById(savedId).get();
         assertThat(beer).isNotNull();
     }
 
     @Test
     void testBeerIdNotFound() {
         assertThrows(NotFoundException.class, () -> {
-            beerController.getBeerById(UUID.randomUUID());
+            beerController.getBeerById(ThreadLocalRandom.current().nextLong());
         });
     }
 
