@@ -4,6 +4,7 @@ import demo.springframework.spring6beer.entities.Beer;
 import demo.springframework.spring6beer.mappers.BeerMapper;
 import demo.springframework.spring6beer.models.BeerDTO;
 import demo.springframework.spring6beer.repositories.BeerRepository;
+import demo.springframework.spring6beer.responses.BeerResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,7 +54,7 @@ class BeerControllerIT {
     @Test
     void testUpdateNotFound() {
         assertThrows(NotFoundException.class, () -> {
-            beerController.updateById(ThreadLocalRandom.current().nextLong(), BeerDTO.builder().build());
+            beerController.updateById(ThreadLocalRandom.current().nextLong(), BeerResponseDTO.builder().build());
         });
     }
 
@@ -62,10 +63,9 @@ class BeerControllerIT {
     @Test
     void updateExistingBeer() {
         Beer beer = beerRepository.findAll().get(0);
-        BeerDTO beerDTO = beerMapper.beerToBeerDTO(beer);
+        BeerResponseDTO beerDTO = beerMapper.beerToBeerResponseDTO(beer);
 
         beerDTO.setId(null);
-        beerDTO.setVersion(null);
         final String beerName = "UPDATED";
         beerDTO.setBeerName(beerName);
 
@@ -115,7 +115,7 @@ class BeerControllerIT {
 
     @Test
     void testListBeers() {
-        List<BeerDTO> dtos = beerController.listBeers();
+        List<BeerResponseDTO> dtos = beerController.listBeers();
 
         assertThat(dtos.size()).isEqualTo(3);
     }
@@ -125,7 +125,7 @@ class BeerControllerIT {
     @Test
     void testEmptyList() {
         beerRepository.deleteAll();
-        List<BeerDTO> dtos = beerController.listBeers();
+        List<BeerResponseDTO> dtos = beerController.listBeers();
 
         assertThat(dtos.size()).isEqualTo(0);
     }

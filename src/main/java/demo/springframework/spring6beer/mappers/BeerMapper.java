@@ -1,15 +1,19 @@
 package demo.springframework.spring6beer.mappers;
 
 import demo.springframework.spring6beer.entities.Beer;
-import demo.springframework.spring6beer.models.BeerDTO;
+import demo.springframework.spring6beer.requests.BeerRequestDTO;
+import demo.springframework.spring6beer.responses.BeerResponseDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface BeerMapper {
 
-    Beer beerDtoToBeer(BeerDTO dto);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "updateDate", ignore = true)
+    Beer beerRequestDtoToBeer(BeerRequestDTO requestDTO);
 
-    BeerDTO beerToBeerDTO(Beer beer);
 
-
+    BeerResponseDTO beerToBeerResponseDTO(Beer beer);
 }

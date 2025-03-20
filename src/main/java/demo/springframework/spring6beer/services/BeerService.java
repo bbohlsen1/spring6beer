@@ -1,71 +1,46 @@
 package demo.springframework.spring6beer.services;
 
+import demo.springframework.spring6beer.entities.Beer;
+import demo.springframework.spring6beer.mappers.BeerMapper;
 import demo.springframework.spring6beer.models.BeerDTO;
-import demo.springframework.spring6beer.models.BeerStyle;
+import demo.springframework.spring6beer.repositories.BeerRepository;
+import demo.springframework.spring6beer.requests.BeerRequestDTO;
+import demo.springframework.spring6beer.responses.BeerResponseDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class BeerService {
+@RequiredArgsConstructor
+@Primary
+public abstract class BeerService {
+
+    private final BeerMapper beerMapper;
 
     private Map<Long, BeerDTO> beerMap;
 
-    public BeerService() {
-        this.beerMap = new HashMap<>();
+    @Autowired
+    BeerRepository beerRepository;
 
-        BeerDTO beer1 = BeerDTO.builder()
-                .id(ThreadLocalRandom.current().nextLong())
-                .version(1)
-                .beerName("Galaxy Cat")
-                .beerStyle(BeerStyle.PALE_ALE)
-                .upc("123456")
-                .price(12.99)
-                .quantityOnHand(122)
-                .createdDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
-                .build();
+    public List<BeerResponseDTO> listBeers() {
+        List<Beer> beers = beerRepository.findAll();
 
-        BeerDTO beer2 = BeerDTO.builder()
-                .id(ThreadLocalRandom.current().nextLong())
-                .version(1)
-                .beerName("Crank")
-                .beerStyle(BeerStyle.PALE_ALE)
-                .upc("123456222")
-                .price(12.99)
-                .quantityOnHand(392)
-                .createdDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
-                .build();
-
-        BeerDTO beer3 = BeerDTO.builder()
-                .id(ThreadLocalRandom.current().nextLong())
-                .version(1)
-                .beerName("Sunshine City")
-                .beerStyle(BeerStyle.IPA)
-                .upc("12356")
-                .price(13.99)
-                .quantityOnHand(144)
-                .createdDate(LocalDateTime.now())
-                .updateDate(LocalDateTime.now())
-                .build();
-
-        beerMap.put(beer1.getId(), beer1);
-        beerMap.put(beer2.getId(), beer2);
-        beerMap.put(beer3.getId(), beer3);
+        return beers
+                .stream()
+                .map(beerMapper::beerToBeerResponseDTO)
+                .collect(Collectors.toList());
     }
 
-
-    public List<BeerDTO> listBeers() {
-        return new ArrayList<>(beerMap.values());
-    }
-
-    public Optional<BeerDTO> getBeerById(Long id) {
+    public Optional<BeerDTO> getBeerById(Long id, BeerResponseDTO beer) {
 
         log.debug("Get Beer ID - in service. ID: {}", id.toString());
 
@@ -102,6 +77,8 @@ public class BeerService {
 
         return Optional.of(existing);
     }
+
+    public abstract BeerResponseDTO saveNewBeer(BeerRequestDTO beerRequest);
 
     public Boolean deleteById(Long beerId) {
         beerMap.remove(beerId);

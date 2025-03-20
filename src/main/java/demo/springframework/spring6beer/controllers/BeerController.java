@@ -1,6 +1,7 @@
 package demo.springframework.spring6beer.controllers;
 
 import demo.springframework.spring6beer.models.BeerDTO;
+import demo.springframework.spring6beer.responses.BeerResponseDTO;
 import demo.springframework.spring6beer.services.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity updateById(@PathVariable("beerId") Long beerId, @RequestBody BeerDTO beer) {
+    public ResponseEntity updateById(@PathVariable("beerId") Long beerId, @RequestBody BeerResponseDTO beer) {
 
         if (beerService.getBeerById(beerId, beer).isEmpty()) {
             throw new NotFoundException("Beer not found");
@@ -62,7 +63,7 @@ public class BeerController {
     }
 
     @GetMapping(value = BEER_PATH)
-    public List<BeerDTO> listBeers() {
+    public List<BeerResponseDTO> listBeers() {
         return beerService.listBeers();
     }
 
