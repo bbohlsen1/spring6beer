@@ -4,23 +4,24 @@ import demo.springframework.spring6beer.mappers.BeerMapper;
 import demo.springframework.spring6beer.repositories.BeerRepository;
 import demo.springframework.spring6beer.requests.BeerRequestDTO;
 import demo.springframework.spring6beer.responses.BeerResponseDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
-public class BeerServiceJPA extends BeerService {
+@RequiredArgsConstructor
+public class BeerServiceJPA implements BeerService {
 
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
 
-    public BeerServiceJPA(BeerRepository beerRepository, BeerMapper beerMapper) {
-        super(beerMapper);
-        this.beerRepository = beerRepository;
-        this.beerMapper = beerMapper;
+    @Override
+    public Optional<BeerResponseDTO> getBeerById(Long id) {
+        return beerRepository.findById(id)
+                .map(beerMapper::beerToBeerResponseDTO);
     }
 
     @Override
@@ -31,72 +32,44 @@ public class BeerServiceJPA extends BeerService {
                 .collect(Collectors.toList());
     }
 
-    /*
     @Override
-    public Optional<BeerResponseDTO> getBeerById(Long id) {
-        return beerRepository.findById(id)
-                .map(beerMapper::beerToBeerResponseDTO);
-    }
-    */
-
-
-    @Override
-    public BeerResponseDTO saveNewBeer(BeerRequestDTO beerRequest) {
+    public BeerResponseDTO saveNewBeer(BeerRequestDTO beerRequestDTO) {
         return beerMapper.beerToBeerResponseDTO(
-                beerRepository.save(beerMapper.beerRequestDtoToBeer(beerRequest))
+                beerRepository.save(
+                        beerMapper.beerRequestDtoToBeer(beerRequestDTO)
+                )
         );
     }
 
-    /*
     @Override
-    public Optional<BeerResponseDTO> updateBeerById(Long beerId, BeerRequestDTO beerRequest) {
-        AtomicReference<Optional<BeerResponseDTO>> atomicReference = new AtomicReference<>();
-
-        beerRepository.findById(beerId).ifPresentOrElse(existingBeer -> {
-            existingBeer.setBeerName(beerRequest.getBeerName());
-            existingBeer.setBeerStyle(beerRequest.getBeerStyle());
-            existingBeer.setUpc(beerRequest.getUpc());
-            existingBeer.setPrice(beerRequest.getPrice());
-
-            atomicReference.set(Optional.of(
-                    beerMapper.beerToBeerResponseDTO(beerRepository.save(existingBeer))
-            ));
-        }, () -> atomicReference.set(Optional.empty()));
-
-        return atomicReference.get();
-    }
-    */
-
-
-    @Override
-    public Boolean deleteById(Long beerId) {
-        if (beerRepository.existsById(beerId)) {
-            beerRepository.deleteById(beerId);
-            return true;
-        }
-        return false;
-    }
-
-    /*
-    @Override
-    public void patchBeerById(Long beerId, BeerRequestDTO beerRequest) {
-        beerRepository.findById(beerId).ifPresent(existingBeer -> {
-            if (beerRequest.getBeerName() != null) {
-                existingBeer.setBeerName(beerRequest.getBeerName());
-            }
-            if (beerRequest.getBeerStyle() != null) {
-                existingBeer.setBeerStyle(beerRequest.getBeerStyle());
-            }
-            if (beerRequest.getUpc() != null) {
-                existingBeer.setUpc(beerRequest.getUpc());
-            }
-            if (beerRequest.getPrice() != null) {
-                existingBeer.setPrice(beerRequest.getPrice());
-            }
-
-            beerRepository.save(existingBeer);
+    public Optional<BeerResponseDTO> updateBeerById(Long id, BeerRequestDTO beer) {
+        return beerRepository.findById(id).map(existing -> {
+            existing.setBeerName(beer.getBeerName());
+            existing.setBeerStyle(beer.getBeerStyle());
+            existing.setUpc(beer.getUpc());
+            return beerMapper.beerToBeerResponseDTO(beerRepository.save(existing));
         });
     }
-    */
 
+    @Override
+    public void deleteById(Long id) {
+        beerRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<BeerResponseDTO> patchBeerById(Long id, BeerRequestDTO beer) {
+        return beerRepository.findById(id).map(existing -> {
+            if (beer.getBeerName() != null) {
+                existing.setBeerName(beer.getBeerName());
+            }
+            if (beer.getBeerStyle() != null) {
+                existing.setBeerStyle(beer.getBeerStyle());
+            }
+            if (beer.getUpc() != null) {
+                existing.setUpc(beer.getUpc());
+            }
+            return beerMapper.beerToBeerResponseDTO(beerRepository.save(existing));
+        });
+    }
 }
+
