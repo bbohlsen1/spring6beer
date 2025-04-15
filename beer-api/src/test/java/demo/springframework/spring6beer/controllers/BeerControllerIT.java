@@ -102,6 +102,7 @@ class BeerControllerIT {
                 .beerName(beerResponseDTO.getBeerName())
                 .beerStyle(beerResponseDTO.getBeerStyle())
                 .upc(beerResponseDTO.getUpc())
+                .price(beerResponseDTO.getPrice())
                 .build();
 
         ResponseEntity<?> responseEntity = beerController.updateById(beer.getId(), beerRequestDTO);

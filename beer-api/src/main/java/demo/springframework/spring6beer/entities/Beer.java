@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "beer", schema = "beer_db")
 public class Beer {
 
     @Id
@@ -22,17 +23,29 @@ public class Beer {
     private Long id;
 
     @Version
+    @Column(name = "version")
     private Integer version;
 
+    @Column(name = "beer_name")
     private String beerName;
+
+    @Column(name = "beer_style")
     private BeerStyle beerStyle;
+
+    @Column(name = "upc")
     private String upc;
+
+    @Column(name = "quantity_on_hand")
     private int quantityOnHand;
+
+    @Column(name = "price")
     private double price;
 
     @CreationTimestamp
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @UpdateTimestamp
+    @Column(name = "update_date")
     private LocalDateTime updateDate;
 }

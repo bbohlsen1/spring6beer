@@ -1,19 +1,20 @@
 version: '3.8'
 
 services:
-  beer-api:
-    image: beer-api:latest
-    build:
-      context: .
-      dockerfile: beer-api/Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://beer-db:5431/beer_db
-      SPRING_DATASOURCE_USERNAME: beer_user
-      SPRING_DATASOURCE_PASSWORD: beer_password
-    depends_on:
-      - beer-db
+
+#  beer-api:
+#    image: beer-api:latest
+#    build:
+#      context: .
+#      dockerfile: beer-api/Dockerfile
+#    ports:
+#      - "8080:8080"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://beer-db:5431/beer_db
+#      SPRING_DATASOURCE_USERNAME: beer_user
+#      SPRING_DATASOURCE_PASSWORD: beer_password
+#    depends_on:
+#      - beer-db
 
   beer-db:
     image: postgres:17
