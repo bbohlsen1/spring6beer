@@ -1,0 +1,5 @@
+demo\springframework\spring6beer\repositories\BeerRepositoryTest.class
+demo\springframework\spring6beer\Spring6BeerApplicationTests.class
+demo\springframework\spring6beer\controllers\BeerControllerIT.class
+demo\springframework\spring6beer\controllers\BeerControllerTest.class
+demo\springframework\spring6beer\bootstrap\BootstrapDataTest.class

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: demo.springframework.spring6beer.controllers.BeerControllerTest
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.604 s -- in demo.springframework.spring6beer.controllers.BeerControllerTest
