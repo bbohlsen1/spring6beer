@@ -8,16 +8,16 @@ import java.util.*;
 
 @Service
 public interface BeerService {
-    Optional<BeerResponseDTO> getBeerById(Long id);
+    Optional<BeerResponseDTO> getBeer(Long id);
 
     List<BeerResponseDTO> listBeers();
 
-    BeerResponseDTO saveNewBeer(BeerRequestDTO beer);
+    BeerResponseDTO createBeer(BeerRequestDTO beer);
 
-    Optional<BeerResponseDTO> updateBeerById(Long id, BeerRequestDTO beer);
+    Optional<BeerResponseDTO> updateBeer(Long id, BeerRequestDTO beer);
 
-    void deleteById(Long id);
+    Optional<BeerResponseDTO> deleteBeer(Long id);
 
-    Optional<BeerResponseDTO> patchBeerById(Long id, BeerRequestDTO beer);
+    Optional<BeerResponseDTO> patchBeer(Long id, BeerRequestDTO beer);
 }
 

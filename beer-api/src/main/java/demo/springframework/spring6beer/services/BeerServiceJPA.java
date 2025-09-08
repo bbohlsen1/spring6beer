@@ -22,7 +22,7 @@ public class BeerServiceJPA implements BeerService {
     private final BeerMapper beerMapper;
 
     @Override
-    public Optional<BeerResponseDTO> getBeerById(Long id) {
+    public Optional<BeerResponseDTO> getBeer(Long id) {
         return beerRepository.findById(id)
                 .map(beerMapper::beerToBeerResponseDTO);
     }
@@ -36,7 +36,7 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public BeerResponseDTO saveNewBeer(BeerRequestDTO beerRequestDTO) {
+    public BeerResponseDTO createBeer(BeerRequestDTO beerRequestDTO) {
         return beerMapper.beerToBeerResponseDTO(
                 beerRepository.save(
                         beerMapper.beerRequestDtoToBeer(beerRequestDTO)
@@ -45,7 +45,7 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public Optional<BeerResponseDTO> updateBeerById(Long id, BeerRequestDTO beer) {
+    public Optional<BeerResponseDTO> updateBeer(Long id, BeerRequestDTO beer) {
         if (!beerRepository.existsById(id)) {
             throw new NotFoundException("Beer with ID " + id + " not found");
         }
@@ -61,15 +61,17 @@ public class BeerServiceJPA implements BeerService {
     }
 
     @Override
-    public void deleteById(Long id) {
-        if (!beerRepository.existsById(id)) {
-            throw new NotFoundException("Beer with ID " + id + " not found");
-        }
-        beerRepository.deleteById(id);
+    public Optional<BeerResponseDTO> deleteBeer(Long id) {
+        return beerRepository.findById(id)
+                .map(beer -> {
+                    BeerResponseDTO beerToDelete = beerMapper.beerToBeerResponseDTO(beer);
+                    beerRepository.deleteById(id);
+                    return beerToDelete;
+                });
     }
 
     @Override
-    public Optional<BeerResponseDTO> patchBeerById(Long id, BeerRequestDTO beer) {
+    public Optional<BeerResponseDTO> patchBeer(Long id, BeerRequestDTO beer) {
         return beerRepository.findById(id).map(existing -> {
             if (beer.getBeerName() != null) {
                 existing.setBeerName(beer.getBeerName());

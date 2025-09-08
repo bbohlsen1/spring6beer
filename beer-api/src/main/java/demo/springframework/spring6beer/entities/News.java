@@ -1,6 +1,5 @@
 package demo.springframework.spring6beer.entities;
 
-import demo.springframework.spring6beer.models.BeerStyle;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,8 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "beer", schema = "beer_db")
-public class Beer {
+@Table(name = "news", schema = "beer_db")
+public class News {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,20 +25,20 @@ public class Beer {
     @Column(name = "version")
     private Integer version;
 
-    @Column(name = "beer_name")
-    private String beerName;
+    @Column(name = "title")
+    private String title;
 
-    @Column(name = "beer_style")
-    private BeerStyle beerStyle;
+    @Column(name = "content", columnDefinition = "TEXT")
+    private String content;
 
-    @Column(name = "upc")
-    private String upc;
+    @Column(name = "author")
+    private String author;
 
-    @Column(name = "quantity_on_hand")
-    private int quantityOnHand;
+    @Column(name = "published_date")
+    private String publishedDate;
 
-    @Column(name = "price")
-    private double price;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @CreationTimestamp
     @Column(name = "created_date")

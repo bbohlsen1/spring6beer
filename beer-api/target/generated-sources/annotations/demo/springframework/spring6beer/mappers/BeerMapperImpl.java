@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-15T20:03:38-0500",
-    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 21.0.2 (Oracle Corporation)"
+    date = "2025-09-08T09:26:05-0500",
+    comments = "version: 1.5.2.Final, compiler: javac, environment: Java 21.0.5 (Amazon.com Inc.)"
 )
 @Component
 public class BeerMapperImpl implements BeerMapper {
