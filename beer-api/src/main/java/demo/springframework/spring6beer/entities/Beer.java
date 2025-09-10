@@ -1,5 +1,6 @@
 package demo.springframework.spring6beer.entities;
 
+import demo.springframework.spring6beer.models.BeerDisplayType;
 import demo.springframework.spring6beer.models.BeerStyle;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,6 +32,12 @@ public class Beer {
 
     @Column(name = "beer_style")
     private BeerStyle beerStyle;
+
+    @Column(name = "display_type")
+    private BeerDisplayType displayType;
+
+    @Column(name = "display_order")
+    private Integer displayOrder;
 
     @Column(name = "upc")
     private String upc;

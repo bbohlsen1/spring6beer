@@ -15,7 +15,6 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @AllArgsConstructor
-
 public class NewsController {
 
     public static final String NEWS_PATH = "/api/v1/news";

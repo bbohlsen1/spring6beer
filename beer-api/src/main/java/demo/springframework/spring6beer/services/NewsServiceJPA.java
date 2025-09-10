@@ -55,6 +55,8 @@ public class NewsServiceJPA implements NewsService {
             existing.setTitle(news.getTitle());
             existing.setContent(news.getContent());
             existing.setAuthor(news.getAuthor());
+            existing.setPublishedDate(news.getPublishedDate());
+            existing.setImageUrl(news.getImageUrl());
             return newsMapper.newsToNewsResponseDTO(newsRepository.save(existing));
         });
     }
@@ -85,6 +87,15 @@ public class NewsServiceJPA implements NewsService {
             }
             if (news.getAuthor() != null && !news.getAuthor().isBlank()) {
                 existing.setAuthor(news.getAuthor());
+                updated = true;
+            }
+
+            if (news.getPublishedDate() != null && !news.getPublishedDate().isBlank()) {
+                existing.setPublishedDate(news.getPublishedDate());
+                updated = true;
+            }
+            if (news.getImageUrl() != null && !news.getImageUrl().isBlank()) {
+                existing.setImageUrl(news.getImageUrl());
                 updated = true;
             }
 
