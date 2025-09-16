@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-10T16:13:54-0500",
+    date = "2025-09-16T10:01:49-0500",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 21.0.7 (Oracle Corporation)"
 )
 @Component
@@ -24,8 +24,10 @@ public class BeerMapperImpl implements BeerMapper {
 
         beer.beerName( requestDTO.getBeerName() );
         beer.beerStyle( requestDTO.getBeerStyle() );
-        beer.displayType( requestDTO.getDisplayType() );
-        beer.displayOrder( requestDTO.getDisplayOrder() );
+        beer.sponsored( requestDTO.getSponsored() );
+        beer.bestSeller( requestDTO.getBestSeller() );
+        beer.featuredTo( requestDTO.getFeaturedTo() );
+        beer.featuredFrom( requestDTO.getFeaturedFrom() );
         beer.upc( requestDTO.getUpc() );
         beer.quantityOnHand( requestDTO.getQuantityOnHand() );
         if ( requestDTO.getPrice() != null ) {
@@ -46,8 +48,10 @@ public class BeerMapperImpl implements BeerMapper {
         beerResponseDTO.id( beer.getId() );
         beerResponseDTO.beerName( beer.getBeerName() );
         beerResponseDTO.beerStyle( beer.getBeerStyle() );
-        beerResponseDTO.displayType( beer.getDisplayType() );
-        beerResponseDTO.displayOrder( beer.getDisplayOrder() );
+        beerResponseDTO.sponsored( beer.getSponsored() );
+        beerResponseDTO.bestSeller( beer.getBestSeller() );
+        beerResponseDTO.featuredFrom( beer.getFeaturedFrom() );
+        beerResponseDTO.featuredTo( beer.getFeaturedTo() );
         beerResponseDTO.price( beer.getPrice() );
         beerResponseDTO.quantityOnHand( beer.getQuantityOnHand() );
         beerResponseDTO.upc( beer.getUpc() );

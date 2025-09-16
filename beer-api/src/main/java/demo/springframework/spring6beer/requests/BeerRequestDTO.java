@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,13 +20,17 @@ public class BeerRequestDTO {
 
     private BeerStyle beerStyle;
 
-    private BeerDisplayType displayType;
+    private Boolean sponsored;
 
-    private Integer displayOrder;
+    private Boolean bestSeller;
+
+    private Date featuredFrom;
+
+    private Date featuredTo;
 
     private Double price;
 
-    private int quantityOnHand;
+    private Integer quantityOnHand;
 
     private String upc;
 }

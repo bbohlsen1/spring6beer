@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -33,17 +34,23 @@ public class Beer {
     @Column(name = "beer_style")
     private BeerStyle beerStyle;
 
-    @Column(name = "display_type")
-    private BeerDisplayType displayType;
+    @Column(name = "sponsored")
+    private Boolean sponsored;
 
-    @Column(name = "display_order")
-    private Integer displayOrder;
+    @Column(name = "best_seller")
+    private Boolean bestSeller;
+
+    @Column(name = "featured_to")
+    private Date featuredTo;
+
+    @Column(name = "featured_from")
+    private Date featuredFrom;
 
     @Column(name = "upc")
     private String upc;
 
     @Column(name = "quantity_on_hand")
-    private int quantityOnHand;
+    private Integer quantityOnHand;
 
     @Column(name = "price")
     private double price;

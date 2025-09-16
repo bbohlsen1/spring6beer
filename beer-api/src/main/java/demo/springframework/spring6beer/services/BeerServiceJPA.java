@@ -1,6 +1,7 @@
 package demo.springframework.spring6beer.services;
 
 import demo.springframework.spring6beer.controllers.NotFoundException;
+import demo.springframework.spring6beer.entities.Beer;
 import demo.springframework.spring6beer.mappers.BeerMapper;
 import demo.springframework.spring6beer.models.BeerDisplayType;
 import demo.springframework.spring6beer.repositories.BeerRepository;
@@ -10,8 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,62 +22,74 @@ public class BeerServiceJPA implements BeerService {
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
 
-    private void validateDisplayTypeAndOrder(BeerDisplayType displayType, Integer displayOrder) {
-        if (displayType == null || displayOrder == null) {
-            return;
+    public void addFeaturedBeer(Long beerId, Date fromDate, Date toDate) {
+        List<Beer> currentFeatured = beerRepository.findByFeaturedFromIsNotNullAndFeaturedToIsNotNull();
+
+        boolean alreadyFeatured = currentFeatured.stream()
+                .anyMatch(beer -> beer.getId().equals(beerId));
+
+        if (currentFeatured.size() >= 3 && !alreadyFeatured) {
+            throw new RuntimeException("Cannot feature more than 3 beers at a time");
         }
 
-        long featuredCount = beerRepository.countByDisplayType(BeerDisplayType.FEATURED);
-        long bestSellingCount = beerRepository.countByDisplayType(BeerDisplayType.BEST_SELLING);
-        long sponsoredCount = beerRepository.countByDisplayType(BeerDisplayType.SPONSORED);
-
-        switch (displayType) {
-            case FEATURED:
-                if (featuredCount >= 3) {
-                    throw new IllegalArgumentException("Cannot have more than 3 FEATURED beers.");
-                }
-                if (displayOrder < 1 || displayOrder > 3) {
-                    throw new IllegalArgumentException("FEATURED display order must be between 1 and 3.");
-                }
-                if (beerRepository.existsByDisplayTypeAndDisplayOrder(BeerDisplayType.FEATURED, displayOrder)) {
-                    throw new IllegalArgumentException("FEATURED position " + displayOrder + " is already taken.");
-                }
-                break;
-            case BEST_SELLING:
-                if (bestSellingCount >= 1) {
-                    throw new IllegalArgumentException("Cannot have more than 1 BEST_SELLING beer.");
-                }
-                if (displayOrder != 1) {
-                    throw new IllegalArgumentException("BEST_SELLING display order must be 1.");
-                }
-                break;
-            case SPONSORED:
-                if (sponsoredCount >= 3) {
-                    throw new IllegalArgumentException("Cannot have more than 3 SPONSORED beers.");
-                }
-                if (displayOrder < 1 || displayOrder > 3) {
-                    throw new IllegalArgumentException("SPONSORED display order must be between 1 and 3.");
-                }
-                if (beerRepository.existsByDisplayTypeAndDisplayOrder(BeerDisplayType.SPONSORED, displayOrder)) {
-                    throw new IllegalArgumentException("SPONSORED position " + displayOrder + " is already taken.");
-                }
-                break;
-            default:
-                break;
-        }
-
-        if (displayType == BeerDisplayType.REGULAR) {
-            long remainingFeatured = beerRepository.countByDisplayType(BeerDisplayType.FEATURED);
-            long remainingSponsored = beerRepository.countByDisplayType(BeerDisplayType.SPONSORED);
-
-            if (remainingFeatured < 1) {
-                throw new IllegalArgumentException("Must maintain at least 1 FEATURED beer.");
-            }
-            if (remainingSponsored < 1) {
-                throw new IllegalArgumentException("Must maintain at least 1 SPONSORED beer.");
-            }
-        }
+        Beer beer = beerRepository.findById(beerId).orElseThrow();
+        beer.setFeaturedFrom(fromDate);
+        beer.setFeaturedTo(toDate);
+        beerRepository.save(beer);
     }
+
+    public void removeFeatured(Long beerId) {
+        Beer beer = beerRepository.findById(beerId).orElseThrow();
+        beer.setFeaturedFrom(null);
+        beer.setFeaturedTo(null);
+        beerRepository.save(beer);
+    }
+
+    public void addBestSeller(Long beerId) {
+        List<Beer> currentBestSeller = beerRepository.findByBestSellerTrue();
+
+        if (currentBestSeller.size() >= 1) {
+            Beer existingBestSeller = currentBestSeller.get(0);
+            existingBestSeller.setBestSeller(false);
+            beerRepository.save(existingBestSeller);
+        }
+
+        System.out.println("Current best sellers: " + currentBestSeller.size());
+
+        Beer beer = beerRepository.findById(beerId).orElseThrow();
+        beer.setBestSeller(true);
+        beerRepository.save(beer);
+    }
+
+    public void removeBestSeller(Long beerId) {
+        Beer beer = beerRepository.findById(beerId).orElseThrow();
+        beer.setBestSeller(false);
+        beerRepository.save(beer);
+    }
+
+    public void addSponsored(Long beerId) {
+        List<Beer> currentSponsored = beerRepository.findBySponsoredTrue();
+
+        boolean alreadySponsored = currentSponsored.stream()
+                .anyMatch(beer -> beer.getId().equals(beerId));
+
+        System.out.println("Current sponsored: " + currentSponsored.size());
+
+        if (currentSponsored.size() >= 3 && !alreadySponsored) {
+            throw new RuntimeException("Cannot sponsor more than 3 beers at a time");
+        }
+
+        Beer beer = beerRepository.findById(beerId).orElseThrow();
+        beer.setSponsored(true);
+        beerRepository.save(beer);
+    }
+
+    public void removeSponsored(Long beerId) {
+        Beer beer = beerRepository.findById(beerId).orElseThrow();
+        beer.setSponsored(false);
+        beerRepository.save(beer);
+    }
+
 
     @Override
     public Optional<BeerResponseDTO> getBeer(Long id) {
@@ -95,31 +107,65 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public BeerResponseDTO createBeer(BeerRequestDTO beerRequestDTO) {
-        validateDisplayTypeAndOrder(beerRequestDTO.getDisplayType(), beerRequestDTO.getDisplayOrder());
-        return beerMapper.beerToBeerResponseDTO(
-                beerRepository.save(
-                        beerMapper.beerRequestDtoToBeer(beerRequestDTO)
-                )
-        );
+        Beer newBeer = beerMapper.beerRequestDtoToBeer(beerRequestDTO);
+        Beer savedBeer = beerRepository.save(newBeer);
+
+        if (beerRequestDTO.getBestSeller() != null) {
+            if (beerRequestDTO.getBestSeller()) {
+                addBestSeller(savedBeer.getId());
+            }
+        }
+
+        if (beerRequestDTO.getSponsored() != null) {
+            if (beerRequestDTO.getSponsored()) {
+                addSponsored(savedBeer.getId());
+            }
+        }
+
+        if (beerRequestDTO.getFeaturedFrom() != null && beerRequestDTO.getFeaturedTo() != null) {
+            addFeaturedBeer(savedBeer.getId(), beerRequestDTO.getFeaturedFrom(),
+                    beerRequestDTO.getFeaturedTo());
+        }
+
+        return beerMapper.beerToBeerResponseDTO(savedBeer);
     }
+
 
     @Override
     public Optional<BeerResponseDTO> updateBeer(Long id, BeerRequestDTO beer) {
-        if (!beerRepository.existsById(id)) {
-            throw new NotFoundException("Beer with ID " + id + " not found");
-        }
-
-        validateDisplayTypeAndOrder(beer.getDisplayType(), beer.getDisplayOrder());
-
         return beerRepository.findById(id).map(existing -> {
             existing.setBeerName(beer.getBeerName());
             existing.setBeerStyle(beer.getBeerStyle());
-            existing.setDisplayType(beer.getDisplayType());
-            existing.setDisplayOrder(beer.getDisplayOrder());
             existing.setPrice(beer.getPrice());
             existing.setQuantityOnHand(beer.getQuantityOnHand());
             existing.setUpc(beer.getUpc());
-            return beerMapper.beerToBeerResponseDTO(beerRepository.save(existing));
+
+            if (beer.getSponsored() != null) {
+                if (beer.getSponsored()) {
+                    addSponsored(existing.getId());
+                } else {
+                    removeSponsored(existing.getId());
+                }
+            }
+
+            if (beer.getBestSeller() != null) {
+                if (beer.getBestSeller()) {
+                    addBestSeller(existing.getId());
+                } else {
+                    removeBestSeller(existing.getId());
+                }
+            }
+
+            if (beer.getFeaturedFrom() != null && beer.getFeaturedTo() != null) {
+                addFeaturedBeer(existing.getId(), beer.getFeaturedFrom(), beer.getFeaturedTo());
+            } else if (beer.getFeaturedFrom() == null && beer.getFeaturedTo() == null) {
+                removeFeatured(existing.getId());
+            }
+
+            Beer savedBeer = beerRepository.findById(id).orElseThrow();
+            return beerMapper.beerToBeerResponseDTO(savedBeer);
+        }).or(() -> {
+            throw new NotFoundException("Beer with ID " + id + " not found");
         });
     }
 
@@ -142,22 +188,38 @@ public class BeerServiceJPA implements BeerService {
             if (beer.getBeerStyle() != null) {
                 existing.setBeerStyle(beer.getBeerStyle());
             }
-            if (beer.getDisplayType() != null || beer.getDisplayOrder() != null) {
-                validateDisplayTypeAndOrder(beer.getDisplayType(), beer.getDisplayOrder());
-                if (beer.getDisplayType() != null) {
-                    existing.setDisplayType(beer.getDisplayType());
-                }
-                if (beer.getDisplayOrder() != null) {
-                    existing.setDisplayOrder(beer.getDisplayOrder());
-                }
-            }
             if (beer.getPrice() != null) {
                 existing.setPrice(beer.getPrice());
+            }
+            if (beer.getQuantityOnHand() != null) {
+                existing.setQuantityOnHand(beer.getQuantityOnHand());
             }
             if (beer.getUpc() != null) {
                 existing.setUpc(beer.getUpc());
             }
-            return beerMapper.beerToBeerResponseDTO(beerRepository.save(existing));
+            if (beer.getSponsored() != null) {
+                if (beer.getSponsored()) {
+                    addSponsored(existing.getId());
+                } else {
+                    removeSponsored(existing.getId());
+                }
+            }
+            if (beer.getBestSeller() != null) {
+                if (beer.getBestSeller()) {
+                    addBestSeller(existing.getId());
+                } else {
+                    removeBestSeller(existing.getId());
+                }
+            }
+
+            if (beer.getFeaturedFrom() != null && beer.getFeaturedTo() != null) {
+                addFeaturedBeer(existing.getId(), beer.getFeaturedFrom(), beer.getFeaturedTo());
+            } else if (beer.getFeaturedFrom() == null && beer.getFeaturedTo() == null) {
+                removeFeatured(existing.getId());
+            }
+
+            Beer savedBeer = beerRepository.findById(id).orElseThrow();
+            return beerMapper.beerToBeerResponseDTO(savedBeer);
         });
     }
 }

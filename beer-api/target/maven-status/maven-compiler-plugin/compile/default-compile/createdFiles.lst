@@ -33,7 +33,6 @@ demo\springframework\spring6beer\responses\RecentResponseDTO$RecentResponseDTOBu
 demo\springframework\spring6beer\entities\Beer.class
 demo\springframework\spring6beer\responses\BeerResponseDTO.class
 demo\springframework\spring6beer\mappers\NewsMapper.class
-demo\springframework\spring6beer\services\BeerServiceJPA$1.class
 demo\springframework\spring6beer\services\BeerServiceJPA.class
 demo\springframework\spring6beer\requests\NewsRequestDTO.class
 demo\springframework\spring6beer\mappers\RecentMapperImpl.class
