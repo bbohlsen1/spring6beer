@@ -1,6 +1,5 @@
 package demo.springframework.spring6beer.responses;
 
-import demo.springframework.spring6beer.models.BeerDisplayType;
 import demo.springframework.spring6beer.models.BeerStyle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +21,8 @@ public class BeerResponseDTO {
     private Date featuredTo;
     private Double price;
     private Integer quantityOnHand;
+    private String description;
+    private String imageUrl;
     private String upc;
     private LocalDateTime createdDate;
     private LocalDateTime updateDate;

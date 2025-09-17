@@ -1,9 +1,9 @@
 package demo.springframework.spring6beer.entities;
 
-import demo.springframework.spring6beer.models.BeerDisplayType;
 import demo.springframework.spring6beer.models.BeerStyle;
 import jakarta.persistence.*;
 import lombok.*;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -54,6 +54,12 @@ public class Beer {
 
     @Column(name = "price")
     private double price;
+
+    @Column(name = "description", columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @CreationTimestamp
     @Column(name = "created_date")

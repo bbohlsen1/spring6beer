@@ -1,6 +1,5 @@
 package demo.springframework.spring6beer.requests;
 
-import demo.springframework.spring6beer.models.BeerDisplayType;
 import demo.springframework.spring6beer.models.BeerStyle;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +28,10 @@ public class BeerRequestDTO {
     private Date featuredTo;
 
     private Double price;
+
+    private String description;
+
+    private String imageUrl;
 
     private Integer quantityOnHand;
 

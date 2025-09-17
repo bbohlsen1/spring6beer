@@ -3,7 +3,6 @@ package demo.springframework.spring6beer.services;
 import demo.springframework.spring6beer.controllers.NotFoundException;
 import demo.springframework.spring6beer.entities.Beer;
 import demo.springframework.spring6beer.mappers.BeerMapper;
-import demo.springframework.spring6beer.models.BeerDisplayType;
 import demo.springframework.spring6beer.repositories.BeerRepository;
 import demo.springframework.spring6beer.requests.BeerRequestDTO;
 import demo.springframework.spring6beer.responses.BeerResponseDTO;
@@ -107,8 +106,39 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public BeerResponseDTO createBeer(BeerRequestDTO beerRequestDTO) {
+
+        if (beerRequestDTO.getFeaturedFrom() != null && beerRequestDTO.getFeaturedTo() != null) {
+            List<Beer> currentFeatured = beerRepository.findByFeaturedFromIsNotNullAndFeaturedToIsNotNull();
+            if (currentFeatured.size() >= 3) {
+                throw new RuntimeException("Cannot feature more than 3 beers at a time");
+            }
+        }
+
+        if (beerRequestDTO.getBestSeller() != null) {
+            if (beerRequestDTO.getBestSeller()) {
+                List<Beer> currentBestSeller = beerRepository.findByBestSellerTrue();
+                if (currentBestSeller.size() >= 1) {
+                    throw new RuntimeException("Cannot have more than 1 best seller at a time");
+                }
+            }
+        }
+
+        if (beerRequestDTO.getSponsored() != null) {
+            if (beerRequestDTO.getSponsored()) {
+                List<Beer> currentSponsored = beerRepository.findBySponsoredTrue();
+                if (currentSponsored.size() >= 3) {
+                    throw new RuntimeException("Cannot sponsor more than 3 beers at a time");
+                }
+            }
+        }
+
         Beer newBeer = beerMapper.beerRequestDtoToBeer(beerRequestDTO);
         Beer savedBeer = beerRepository.save(newBeer);
+
+        newBeer.setFeaturedTo(null);
+        newBeer.setFeaturedFrom(null);
+        newBeer.setBestSeller(false);
+        newBeer.setSponsored(false);
 
         if (beerRequestDTO.getBestSeller() != null) {
             if (beerRequestDTO.getBestSeller()) {
@@ -137,6 +167,8 @@ public class BeerServiceJPA implements BeerService {
             existing.setBeerName(beer.getBeerName());
             existing.setBeerStyle(beer.getBeerStyle());
             existing.setPrice(beer.getPrice());
+            existing.setDescription(beer.getDescription());
+            existing.setImageUrl(beer.getImageUrl());
             existing.setQuantityOnHand(beer.getQuantityOnHand());
             existing.setUpc(beer.getUpc());
 
@@ -196,6 +228,12 @@ public class BeerServiceJPA implements BeerService {
             }
             if (beer.getUpc() != null) {
                 existing.setUpc(beer.getUpc());
+            }
+            if (beer.getDescription() != null) {
+                existing.setDescription(beer.getDescription());
+            }
+            if (beer.getImageUrl() != null) {
+                existing.setImageUrl(beer.getImageUrl());
             }
             if (beer.getSponsored() != null) {
                 if (beer.getSponsored()) {

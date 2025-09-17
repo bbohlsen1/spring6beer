@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-09-16T10:01:49-0500",
+    date = "2025-09-17T15:28:26-0500",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 21.0.7 (Oracle Corporation)"
 )
 @Component
@@ -33,6 +33,8 @@ public class BeerMapperImpl implements BeerMapper {
         if ( requestDTO.getPrice() != null ) {
             beer.price( requestDTO.getPrice() );
         }
+        beer.description( requestDTO.getDescription() );
+        beer.imageUrl( requestDTO.getImageUrl() );
 
         return beer.build();
     }
@@ -54,6 +56,8 @@ public class BeerMapperImpl implements BeerMapper {
         beerResponseDTO.featuredTo( beer.getFeaturedTo() );
         beerResponseDTO.price( beer.getPrice() );
         beerResponseDTO.quantityOnHand( beer.getQuantityOnHand() );
+        beerResponseDTO.description( beer.getDescription() );
+        beerResponseDTO.imageUrl( beer.getImageUrl() );
         beerResponseDTO.upc( beer.getUpc() );
         beerResponseDTO.createdDate( beer.getCreatedDate() );
         beerResponseDTO.updateDate( beer.getUpdateDate() );

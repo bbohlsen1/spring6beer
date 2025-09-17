@@ -21,7 +21,6 @@ demo\springframework\spring6beer\services\NewsServiceJPA.class
 demo\springframework\spring6beer\mappers\NewsMapperImpl.class
 demo\springframework\spring6beer\requests\NewsRequestDTO$NewsRequestDTOBuilder.class
 demo\springframework\spring6beer\mappers\BeerMapperImpl.class
-demo\springframework\spring6beer\models\BeerDisplayType.class
 demo\springframework\spring6beer\controllers\ExceptionController.class
 demo\springframework\spring6beer\requests\RecentRequestDTO$RecentRequestDTOBuilder.class
 demo\springframework\spring6beer\entities\News$NewsBuilder.class
